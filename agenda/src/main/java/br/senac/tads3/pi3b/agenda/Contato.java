@@ -30,18 +30,36 @@ import java.util.Date;
  * @author fernando.tsuda
  */
 public class Contato {
-  
+
   private Long id;
-  
+
   private String nome;
-  
+
   private String email;
-  
+
   private String telefone;
-  
+
   private Date dtNascimento;
-  
+
   private Date dtCadastro;
+  
+  public Contato() {
+  }
+
+  public Contato(String nome, Date dtNascimento, String email, String telefone) {
+    this.nome = nome;
+    this.dtNascimento = dtNascimento;
+    this.email = email;
+    this.telefone = telefone;
+  }
+
+  public Contato(Long id, String nome, Date dtNascimento, String email, String telefone) {
+    this.id = id;
+    this.nome = nome;
+    this.dtNascimento = dtNascimento;
+    this.email = email;
+    this.telefone = telefone;
+  }
 
   public Long getId() {
     return id;
@@ -90,5 +108,5 @@ public class Contato {
   public void setDtCadastro(Date dtCadastro) {
     this.dtCadastro = dtCadastro;
   }
-  
+
 }

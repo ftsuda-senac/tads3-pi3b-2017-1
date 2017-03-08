@@ -23,18 +23,10 @@
  */
 package br.senac.tads3.pi3b.agenda;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -46,11 +38,14 @@ import javax.swing.table.TableModel;
  */
 public class AgendaForm extends javax.swing.JFrame {
 
+  private ContatoDAO dao;
+
   /**
    * Creates new form AgendaForm
    */
   public AgendaForm() {
     initComponents();
+    dao = new ContatoDAO();
   }
 
   /**
@@ -179,105 +174,31 @@ public class AgendaForm extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    ConexaoBD conexao = new ConexaoBD();
-    Connection conn = null;
-    PreparedStatement stmt = null;
+    DateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+    Date dtNascimento = null;
     try {
-      conn = conexao.obterConexao();
-
-      String nome = jTextField1.getText();
-      String dtNascStr = jTextField2.getText();
-      String email = jTextField3.getText();
-      String telefone = jTextField4.getText();
-
-      DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
-      Date dtNasc = null;
-      try {
-	dtNasc = formatadorData.parse(dtNascStr);
-      } catch (ParseException ex) {
-	Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      stmt = conn.prepareStatement("INSERT INTO TB_CONTATO "
-	 + "(NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO) "
-	 + "VALUES (?,?,?,?,?)");
-      stmt.setString(1, nome);
-      stmt.setDate(2, new java.sql.Date(dtNasc.getTime()));
-      stmt.setString(3, telefone);
-      stmt.setString(4, email);
-      stmt.setTimestamp(5, new java.sql.Timestamp(System.currentTimeMillis()));
-      
-      stmt.executeUpdate();
-      
-      
-
-    } catch (SQLException ex) {
+      dtNascimento = formatador.parse(jTextField2.getText());
+    } catch (ParseException ex) {
       Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (ClassNotFoundException ex) {
-      Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-    } finally {
-      if (stmt != null) {
-	try {
-	  stmt.close();
-	} catch (SQLException ex) {
-	  Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-	}
-      }
-      if (conn != null) {
-	try {
-	  conn.close();
-	} catch (SQLException ex) {
-	  Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-	}
-      }
     }
+    Contato c = new Contato(jTextField1.getText(), dtNascimento, jTextField3.getText(), jTextField4.getText());
+    dao.incluir(c);
 
   }//GEN-LAST:event_jButton1ActionPerformed
 
   public void listarContatos() {
-    ConexaoBD conexao = new ConexaoBD();
-    String comandoSQL = "SELECT ID_CONTATO, NM_CONTATO, "
-	    + "DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL "
-	    + "FROM TB_CONTATO";
-    
-    Vector<Object> colunas = new Vector<>();
-    Vector<Object> resultados = new Vector<>();
-    try (Connection conn = conexao.obterConexao();
-	    PreparedStatement stmt = conn.prepareStatement(comandoSQL)) {
-      
-      try (ResultSet rs = stmt.executeQuery()) {
-	
-	ResultSetMetaData md = rs.getMetaData();
-	int numColunas = md.getColumnCount();
-	for (int i = 1; i <= numColunas; i++) {
-	  colunas.add(md.getColumnName(i));
-	}
-	
-	while (rs.next()) {
-	  Vector<Object> linha = new Vector<>();
-	  linha.addElement(rs.getLong(1));
-	  linha.addElement(rs.getString(2));
-	  linha.addElement(rs.getDate(3));
-	  linha.addElement(rs.getString(4));
-	  linha.addElement(rs.getString(5));
-	  resultados.add(linha);
-	}
-      }      
-    } catch (SQLException ex) {
-      Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (ClassNotFoundException ex) {
-      Logger.getLogger(AgendaForm.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    
+
+    ListaResultados resultados = dao.listarComColunas();
+
     // Adicionar resultados no jTable1
     jTable1.removeAll();
-    
-    
-    TableModel model = new DefaultTableModel(resultados, colunas) {
+
+    TableModel model = new DefaultTableModel(resultados.getResultadosVector(), resultados.getColunasVector()) {
       @Override
       public Class getColumnClass(int column) {
 	for (int row = 0; row < getRowCount(); row++) {
 	  Object o = getValueAt(row, column);
-	  
+
 	  if (o != null) {
 	    return o.getClass();
 	  }
@@ -286,9 +207,9 @@ public class AgendaForm extends javax.swing.JFrame {
       }
     };
     jTable1.setModel(model);
-    
+
   }
-  
+
   /**
    * @param args the command line arguments
    */
