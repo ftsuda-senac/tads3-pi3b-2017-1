@@ -25,9 +25,19 @@ public class AgendaServlet extends HttpServlet {
 	  HttpServletResponse response) 
 	  throws ServletException {
     
-    response.setContentType("text/plain");
+    response.setContentType("text/html");
     try (PrintWriter out = response.getWriter()) {
-      out.print("Olá mundo web");
+      out.println("<!DOCTYPE html>");
+      out.println("<html>");
+      out.println("<head>");
+      out.println("<meta charset=\"utf-8\" />");
+      out.println("<title>Exemplo Servlet</title>");
+      out.println("</head>");
+      out.println("<body>");
+      out.println("<div class=\"conteudo\">");
+      out.println("<h1>Teste Servlet</h1>");
+      out.println("<h2>Exemplo de servlet</h2>");
+      out.println("</div></body></html>");
       out.flush();
     } catch (IOException e) {
       
