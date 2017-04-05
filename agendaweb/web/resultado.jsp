@@ -8,9 +8,10 @@
   </head>
   <body>
     <h1>Contato novo</h1>
-    <h1><c:out value="${novoContato.nome}" /></h1>
-    <p><c:out value="${novoContato.email}" /></p>
-    <p><c:out value="${novoContato.telefone}" /></p>
+    <h1><c:out value="${sessionScope.novoContato.nome}" /></h1>
+    <p><c:out value="${sessionScope.novoContato.email}" /></p>
+    <p><c:out value="${sessionScope.novoContato.telefone}" /></p>
+    <c:remove scope="session" var="novoContato" />
     <a href="agenda">Voltar</a>
   </body>
 </html>
