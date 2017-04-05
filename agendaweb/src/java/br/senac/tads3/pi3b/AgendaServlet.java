@@ -10,6 +10,9 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,38 +38,14 @@ public class AgendaServlet extends HttpServlet {
     Contato c3 = new Contato(3L, "Beltrana Maria", new Date(),
 	    "beltrana@zmail.com", "(11) 93456-7890");
     List<Contato> contatos = Arrays.asList(c1, c2, c3);
-
-    response.setContentType("text/html");
-    try (PrintWriter out = response.getWriter()) {
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("<meta charset=\"utf-8\" />");
-      out.println("<title>Exemplo Servlet</title>");
-      out.println("</head>");
-      out.println("<body>");
-      out.println("<div class=\"conteudo\">");
-      out.println("<h1>Agenda</h1>");
-      out.println("<table>");
-      out.println("<tr>");
-      out.println("<th>ID</th>");
-      out.println("<th>Nome</th>");
-      out.println("<th>E-mail</th>");
-      out.println("<th>Telefone</th>");
-      out.println("</tr>");
-      for (Contato c : contatos) {
-	out.println("<tr>");
-	out.println("<td>" + c.getId() + "</td>");
-	out.println("<td>" + c.getNome() + "</td>");
-	out.println("<td>" + c.getEmail() + "</td>");
-	out.println("<td>" + c.getTelefone() + "</td>");
-	out.println("</tr>");
-      }
-      out.println("</table>");
-      out.println("</div></body></html>");
-      out.flush();
-    } catch (IOException e) {
-
+    
+    request.setAttribute("listaContatos", contatos);
+    RequestDispatcher dispatcher = 
+	    request.getRequestDispatcher("agenda2.jsp");
+    try {
+      dispatcher.forward(request, response);
+    } catch (IOException ex) {
+      
     }
   }
 }

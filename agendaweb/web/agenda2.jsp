@@ -11,7 +11,7 @@
     <title>JSP Page</title>
   </head>
   <body>
-    <h1>Exemplo JSP</h1>
+    <h1>Exemplo Servlet + JSP</h1>
     <table>
       <tr>
 	<th>ID</th>
@@ -20,14 +20,8 @@
 	<th>Telefone</th>
       </tr>
       <%
-	Contato c1 = new Contato(1L, "Fulano da Silva", new Date(),
-		"fulano@zmail.com", "(11) 91234-5678");
-	Contato c2 = new Contato(2L, "Ciclano de Souza", new Date(),
-		"ciclano@zmail.com", "(11) 92345-6789");
-	Contato c3 = new Contato(3L, "Beltrana Maria", new Date(),
-		"beltrana@zmail.com", "(11) 93456-7890");
-	List<Contato> contatos = Arrays.asList(c1, c2, c3);
-
+	List<Contato> contatos = (List<Contato>) 
+		request.getAttribute("listaContatos");
 	for (Contato c : contatos) {
       %>
       <tr>
