@@ -6,7 +6,6 @@
 package br.senac.tads3.pi3b;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Date;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class EntradaServlet extends HttpServlet {
 
   /**
-   * Handles the HTTP <code>GET</code> method.
+   * Neste exemplo, somente apresenta a tela do formulário
    *
    * @param request servlet request
    * @param response servlet response
@@ -34,8 +33,8 @@ public class EntradaServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
 	  throws ServletException, IOException {
-    RequestDispatcher dispatcher = 
-	    request.getRequestDispatcher("entrada.jsp");
+    RequestDispatcher dispatcher
+	    = request.getRequestDispatcher("entrada.jsp");
     dispatcher.forward(request, response);
   }
 
@@ -50,17 +49,36 @@ public class EntradaServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
 	  throws ServletException, IOException {
+    boolean erro = false;
+
     String nome = request.getParameter("nome");
+    if (nome == null || nome.length() < 1) {
+      erro = true;
+      request.setAttribute("erroNome", true);
+    }
     String email = request.getParameter("email");
+    if (email == null || email.length() < 1) {
+      erro = true;
+      request.setAttribute("erroEmail", true);
+    }
     String telefone = request.getParameter("telefone");
-    
-    Contato novo = new Contato(nome, new Date(), email, telefone);
-    
-    HttpSession sessao = request.getSession();
-    sessao.setAttribute("novoContato", novo);
-    response.sendRedirect("resultado.jsp");
-
+    if (telefone == null || telefone.length() < 1) {
+      erro = true;
+      request.setAttribute("erroTelefone", true);
+    }
+    if (!erro) {
+      // Os dados foram preenchidos corretamente
+      // Faz o fluxo POST-REDIRECT-GET para a tela de resultados
+      Contato novo = new Contato(nome, new Date(), email, telefone);
+      HttpSession sessao = request.getSession();
+      sessao.setAttribute("novoContato", novo);
+      response.sendRedirect("resultado.jsp");
+    } else {
+      // Tem erro no preenchimento dos dados.
+      // Reapresenta o formulário para o usuário indicando os erros.
+      RequestDispatcher dispatcher = request.getRequestDispatcher("entrada.jsp");
+      dispatcher.forward(request, response);
+    }
   }
-
 
 }
