@@ -5,6 +5,7 @@
  */
 package br.senac.tads3.pi3b.agendawebmvn;
 
+import br.senac.tads3.pi3b.agendawebmvn.dao.ContatoDAO;
 import br.senac.tads3.pi3b.agendawebmvn.model.Contato;
 import java.io.IOException;
 import java.util.Date;
@@ -71,6 +72,10 @@ public class EntradaServlet extends HttpServlet {
       // Os dados foram preenchidos corretamente
       // Faz o fluxo POST-REDIRECT-GET para a tela de resultados
       Contato novo = new Contato(nome, new Date(), email, telefone);
+      
+      ContatoDAO dao = new ContatoDAO();
+      dao.incluirComTransacao(novo);
+      
       HttpSession sessao = request.getSession();
       sessao.setAttribute("novoContato", novo);
       response.sendRedirect("resultado.jsp");
