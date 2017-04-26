@@ -20,24 +20,24 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author fernando.tsuda
  */
-@WebServlet("/agenda")
+@WebServlet(name = "AgendaServlet", urlPatterns = {"/agenda"})
 public class AgendaServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request,
 	  HttpServletResponse response)
 	  throws ServletException {
-    
+
     ContatoDAO dao = new ContatoDAO();
     List<Contato> contatos = dao.listar();
-    
+
     request.setAttribute("listaContatos", contatos);
-    RequestDispatcher dispatcher = 
-	    request.getRequestDispatcher("agenda.jsp");
+    RequestDispatcher dispatcher
+	    = request.getRequestDispatcher("agenda.jsp");
     try {
       dispatcher.forward(request, response);
     } catch (IOException ex) {
-      
+
     }
   }
 }

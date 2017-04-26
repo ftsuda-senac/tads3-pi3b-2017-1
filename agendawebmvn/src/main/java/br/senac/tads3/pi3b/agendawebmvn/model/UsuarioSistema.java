@@ -23,7 +23,9 @@
  */
 package br.senac.tads3.pi3b.agendawebmvn.model;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -49,7 +51,7 @@ public class UsuarioSistema {
 
   private String hashSenha;
 
-  private String[] papeis;
+  private String[] papeis; // ROLES
 
   public UsuarioSistema() {
 
@@ -92,6 +94,11 @@ public class UsuarioSistema {
 
   public void setPapeis(String[] papeis) {
     this.papeis = papeis;
+  }
+  
+  public boolean temPapel(String papel) {
+    List<String> papeisUsuario = Arrays.asList(papeis);
+    return papeisUsuario.contains(papel);
   }
 
   public static UsuarioSistema obterUsuario(String usuario, String senha) {
