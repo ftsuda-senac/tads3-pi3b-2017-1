@@ -47,13 +47,20 @@ public class LoginServlet extends HttpServlet {
 	  HttpServletResponse response)
 	  throws ServletException, IOException {
 
+    // Verifica se usuário já se logou, se positivo redireciona para tela principal
+    HttpSession sessao = request.getSession(false);
+    if (sessao != null && sessao.getAttribute("usuario") != null) {
+      response.sendRedirect(request.getContextPath() + "/agenda");
+      return;
+    }
+
     // Apresenta tela de login para o usuário
     RequestDispatcher dispatcher
 	    = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
     dispatcher.forward(request, response);
 
   }
-  
+
   @Override
   public void doPost(HttpServletRequest request,
 	  HttpServletResponse response)
@@ -61,10 +68,10 @@ public class LoginServlet extends HttpServlet {
     // Recupera dados preenchidos pelo usuário
     String usuario = request.getParameter("usuario");
     String senhaDigitada = request.getParameter("senha");
-    
+
     // Compara com o usuário/senha previamente cadastrado
-    UsuarioSistema usuarioSistema = 
-	    UsuarioSistema.obterUsuario(usuario, senhaDigitada);
+    UsuarioSistema usuarioSistema
+	    = UsuarioSistema.obterUsuario(usuario, senhaDigitada);
     if (usuarioSistema != null) {
       // Usuario existe e a senha está correta
       // Caso exista, invalida a sessão anterior (www.owasp.org)
@@ -75,7 +82,7 @@ public class LoginServlet extends HttpServlet {
       // Criar uma sessão
       sessao = request.getSession(true);
       sessao.setAttribute("usuario", usuarioSistema);
-      
+
       response.sendRedirect(request.getContextPath() + "/agenda");
     } else {
       response.sendRedirect(
