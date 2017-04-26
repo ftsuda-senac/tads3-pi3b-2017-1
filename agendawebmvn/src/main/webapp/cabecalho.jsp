@@ -16,5 +16,6 @@
     <p>
       Hash da senha: <c:out value="${sessionScope.usuario.hashSenha}" />
     </p>
+    <p><a href="logout">Sair</a></p>
   </c:if>
 </header>
