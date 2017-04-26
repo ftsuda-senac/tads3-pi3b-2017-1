@@ -23,6 +23,7 @@
  */
 package br.senac.tads3.pi3b.agendawebmvn;
 
+import br.senac.tads3.pi3b.agendawebmvn.model.UsuarioSistema;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,15 +41,6 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-
-  // Simulação "hardcoded" dos usuários cadastrados no sistema.
-  private static final Map<String, String> USUARIOS_CADASTRADOS;
-
-  static {
-    USUARIOS_CADASTRADOS = new LinkedHashMap<>();
-    USUARIOS_CADASTRADOS.put("madruga", "pagueoaluguel");
-    USUARIOS_CADASTRADOS.put("bozo", "abcd1234");
-  }
 
   @Override
   public void doGet(HttpServletRequest request,
@@ -71,8 +63,9 @@ public class LoginServlet extends HttpServlet {
     String senhaDigitada = request.getParameter("senha");
     
     // Compara com o usuário/senha previamente cadastrado
-    String senhaCadastrada = USUARIOS_CADASTRADOS.get(usuario);
-    if (senhaCadastrada != null && senhaCadastrada.equals(senhaDigitada)) {
+    UsuarioSistema usuarioSistema = 
+	    UsuarioSistema.obterUsuario(usuario, senhaDigitada);
+    if (usuarioSistema != null) {
       // Usuario existe e a senha está correta
       // Caso exista, invalida a sessão anterior (www.owasp.org)
       HttpSession sessao = request.getSession(false);
@@ -81,7 +74,7 @@ public class LoginServlet extends HttpServlet {
       }
       // Criar uma sessão
       sessao = request.getSession(true);
-      sessao.setAttribute("usuario", usuario);
+      sessao.setAttribute("usuario", usuarioSistema);
       
       response.sendRedirect(request.getContextPath() + "/agenda");
     } else {

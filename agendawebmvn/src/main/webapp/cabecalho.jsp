@@ -11,7 +11,10 @@
   </nav>
   <c:if test="${not empty sessionScope.usuario}">
     <p>
-      Usuário: <c:out value="${sessionScope.usuario}" />
+      Usuário: <c:out value="${sessionScope.usuario.nomeCompleto}" />
+    </p>
+    <p>
+      Hash da senha: <c:out value="${sessionScope.usuario.hashSenha}" />
     </p>
   </c:if>
 </header>
