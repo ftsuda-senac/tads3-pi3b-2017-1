@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <header class="text-center">
   <h1>Agenda de contatos</h1>
   <nav class="menu">
@@ -8,4 +9,9 @@
       <li><a href="#">Opção 4</a></li>
     </ul>
   </nav>
+  <c:if test="${not empty sessionScope.usuario}">
+    <p>
+      Usuário: <c:out value="${sessionScope.usuario}" />
+    </p>
+  </c:if>
 </header>
